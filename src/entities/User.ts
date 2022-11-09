@@ -18,6 +18,9 @@ export default class User {
     @Column({nullable: false})
     password: string;
 
+    @Column({ nullable: false })
+    role: string;
+
     @ManyToOne(type => School, { onDelete: 'CASCADE' })
     @JoinColumn({name: 'school_id'})
     school_id: School;

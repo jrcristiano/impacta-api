@@ -8,6 +8,7 @@ class SchoolController {
     try {
       return res.status(200).json(await SchoolService.findAll(req));
     } catch ({ message }) {
+      console.log(message)
       return res.status(500).json({ message });
     }
   }

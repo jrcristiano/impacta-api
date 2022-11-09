@@ -1,7 +1,9 @@
 import { Request } from "express";
-import { FindManyOptions, FindOptionsWhere, In, Like, QueryBuilder } from "typeorm";
+import { FindManyOptions, In } from "typeorm";
 import School from "../entities/School";
+import Filter from "../helpers/Filter";
 import ISchool from "../interfaces/ISchool";
+import ISchoolQueryParams from "../interfaces/ISchoolQueryParams";
 import AbstractService from "./AbstractService";
 import SegmentService from "./SegmentService";
 
@@ -11,34 +13,19 @@ class SchoolService extends AbstractService<School> {
   }
 
   findAll(req: Request): Promise<School[]> {
-    const filters = {
-      relations: ['segments'],
-      where: {
-        name: undefined,
-        status: undefined,
-        segments: {
-          name: undefined,
-        }
-      },
-      order: {
-        id: 'DESC'
-      },
-      take: 8
-    };
+    const query = req.query as ISchoolQueryParams;
+    const filters = new Filter().setFilters(query)
+      .getFilters();
 
-    if (req.query.buscar) {
-      filters.where.name = Like(`%${req.query.buscar}%`) ;
+    if (query.status && query.status != 'TODOS') {
+      filters.where.status = query.status;
     }
 
-    if (req.query.status && req.query.status != 'TODOS') {
-      filters.where.status = req.query.status;
-    }
-
-    if (req.query.segmentos) {
-      filters.where.segments.name = In(req.query.segmentos as String[]);
+    if (query.segmentos) {
+      filters.where.segments.name = In(query.segmentos);
     }
     
-    return this.repository.find(filters);
+    return this.getAll(filters as FindManyOptions<School>);
   }
 
   async findSchoolByCnpj(cnpj: string) {
