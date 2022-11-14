@@ -1,37 +1,27 @@
 import { In, Like } from "typeorm";
-import IApiQueryParams from "../interfaces/IApiParams";
-import IQueryParams from "../interfaces/IQueryParams";
-
-class Filter {
-  private filters: IQueryParams;
+import IFilterApi from "../interfaces/ApiParams/FilterApi";
+import IQueryParams from "../interfaces/QueryParams/QueryParams";
+class FilterApi {
+  private filters: IFilterApi;
 
   setFilters(query: IQueryParams) {
     const filters = {
       loadEagerRelations: false,
+      relations: [],
       order: {
         id: 'DESC'
       },
+      sort: [],
       take: 8,
       offset: 0,
       select: [] as string[],
-      where: {
-          name: undefined,
-          status: undefined,
-          segments: {
-            name: undefined,
-        }
-      }
-    } as IApiQueryParams;
+    } as IFilterApi;
 
     if (query.columns) {
       filters.select.push('id', ...query.columns);
     }
 
-    if (query.search) {
-      filters.where.name = Like(`%${query.search}%`) ;
-    }
-
-    if (query.relations == 'true') {
+    if (query.eager == 'true') {
       filters.loadEagerRelations = true;
     }
 
@@ -47,17 +37,20 @@ class Filter {
       filters.select.push('id', ...query.columns);
     }
 
-    if (query.search) {
-      filters.where.name = Like(`%${query.search}%`) ;
+    if (query.order && query.sort) {
+      filters.order = {};
+      for (const sort of query.sort) {
+        filters.order[sort] = query.order;
+      }
     }
 
     this.filters = filters;
     return this;
   }
 
-  getFilters(): IApiQueryParams {
+  getFilters(): IFilterApi {
     return this.filters;
   }
 }
 
-export default Filter;
+export default FilterApi;

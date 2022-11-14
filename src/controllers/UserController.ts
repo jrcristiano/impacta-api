@@ -3,13 +3,13 @@ import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import UserService from '../services/UserService';
 import env from '../../env';
-import IUser from '../interfaces/IUser';
+import IUser from '../interfaces/Entities/User';
 import User from '../entities/User';
 
 class UserController {
   async index(req: Request, res: Response) {
     try {
-      return res.status(200).json(await UserService.getAll(req));
+      return res.status(200).json(await UserService.findAll(req));
     } catch ({message}) {
       return res.status(500).json({message});
     }
@@ -23,11 +23,11 @@ class UserController {
           message: errors.array()
         });
       }
-      
-      const body = req.body as IUser;
-      body.password = bcrypt.hashSync(body.password, env.PASSWORD_SALT);
 
-      return res.status(201).json(await UserService.create(body));
+      await UserService.save(req);
+      return res.status(201).json({
+        message: 'Usuário cadastrado com sucesso!'
+      });
     } catch ({message}) {
       return res.status(500).json({message});
     }
@@ -62,7 +62,7 @@ class UserController {
         body.password = bcrypt.hashSync(body.password, env.PASSWORD_SALT);
       }
 
-      await UserService.update(req.params.id, req.body);
+      await UserService.save(req);
       return res.status(200).json({
         message: `Usuário ${req.params.id} editado com sucesso.`
       });

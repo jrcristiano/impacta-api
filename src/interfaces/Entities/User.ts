@@ -1,4 +1,4 @@
-import School from "../entities/School";
+import School from "../Entities/School";
 
 export default interface UserInterface {
   id: number;
@@ -7,6 +7,7 @@ export default interface UserInterface {
   email: string;
   password: string;
   school_id: School;
+  role: string;
   created_at: Date;
   updated_at: Date;
 };

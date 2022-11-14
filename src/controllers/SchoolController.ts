@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
-import School from "../entities/School";
 import SchoolService from "../services/SchoolService";
 
 class SchoolController {
@@ -8,7 +7,6 @@ class SchoolController {
     try {
       return res.status(200).json(await SchoolService.findAll(req));
     } catch ({ message }) {
-      console.log(message)
       return res.status(500).json({ message });
     }
   }
@@ -24,9 +22,7 @@ class SchoolController {
         });
       }
 
-      const school = req.body as School;
-      await SchoolService.save(school, req);
-
+      await SchoolService.save(req);
       return res.status(201).json({
         message: 'Escola cadastrada com sucesso.'
       });
@@ -69,7 +65,7 @@ class SchoolController {
         })
       }
 
-      await SchoolService.save(school, req);
+      await SchoolService.save(req);
       return res.status(200).json({
         message: 'Escola editada com sucesso.',
       });

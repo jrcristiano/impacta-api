@@ -1,4 +1,4 @@
-import IUser from "./IUser";
+import IUser from "../entities/User";
 
 interface JwtDecoded {
   user: IUser;

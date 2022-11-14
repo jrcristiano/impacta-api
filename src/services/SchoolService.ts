@@ -1,9 +1,10 @@
 import { Request } from "express";
-import { FindManyOptions, In } from "typeorm";
+import { FindManyOptions, In, Like } from "typeorm";
 import School from "../entities/School";
-import Filter from "../helpers/Filter";
-import ISchool from "../interfaces/ISchool";
-import ISchoolQueryParams from "../interfaces/ISchoolQueryParams";
+import FilterApi from "../helpers/FilterApi";
+import SchoolFilterApi from "../interfaces/ApiParams/SchoolFilterApi";
+import SchoolQueryParams from "../interfaces/QueryParams/SchoolQueryParams";
+import SchoolBody from "../interfaces/RequestBody/SchoolBody";
 import AbstractService from "./AbstractService";
 import SegmentService from "./SegmentService";
 
@@ -12,10 +13,26 @@ class SchoolService extends AbstractService<School> {
     super(School);
   }
 
-  findAll(req: Request): Promise<School[]> {
-    const query = req.query as ISchoolQueryParams;
-    const filters = new Filter().setFilters(query)
-      .getFilters();
+  async findAll(req: Request): Promise<School[]> {
+    const query = req.query as SchoolQueryParams;
+    let filterApi = new FilterApi()
+      .setFilters(query)
+      .getFilters() as SchoolFilterApi;
+    
+    const filters = {
+      ...filterApi,
+      where: {
+        name: undefined,
+        status: undefined,
+        segments: {
+          name: undefined
+        }
+      }
+    }
+
+    if (query.search) {
+      filters.where.name = Like(`%${query.search}%`)
+    }
 
     if (query.status && query.status != 'TODOS') {
       filters.where.status = query.status;
@@ -25,7 +42,7 @@ class SchoolService extends AbstractService<School> {
       filters.where.segments.name = In(query.segmentos);
     }
     
-    return this.getAll(filters as FindManyOptions<School>);
+    return await this.getAll(filters as FindManyOptions<School>);
   }
 
   async findSchoolByCnpj(cnpj: string) {
@@ -34,9 +51,14 @@ class SchoolService extends AbstractService<School> {
     });
   }
 
-  async save(school: School, req: Request): Promise<School> {
-    const body = req.body as ISchool;
-    
+  async save(req: Request): Promise<School> {
+    let school = new School;
+    if (req.params.id) {
+      school = await this.findById(req.params.id);
+    }
+
+    const body = req.body as SchoolBody;
+
     school.name = body.name;
     school.city = body.city;
     school.phone = body.phone;

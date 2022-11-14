@@ -4,7 +4,7 @@ import SchoolService from "../../services/SchoolService";
 const isUsedCnpj: CustomValidator = async (value) => {
   return SchoolService.findSchoolByCnpj(value).then(school => {
     if (school) {
-      throw new Error('o cnpj informado já está em uso.');
+      throw new Error('O cnpj informado já está em uso.');
     }
   });
 };

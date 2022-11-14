@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import UserService from '../services/UserService';
-import IUser from '../interfaces/IUser';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import env from '../../env';
@@ -18,7 +17,7 @@ class AuthController {
         });
       }
 
-      const user = await UserService.findUserByEmail(email) as IUser;
+      const user = await UserService.findUserByEmail(email);
       if (!user) {
         return res.status(404).json({
           message: 'Usuário não encontrado.',

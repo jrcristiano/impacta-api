@@ -1,6 +1,6 @@
-import Segment from "../entities/Segment";
+import Segment from "../../entities/School";
 
-export default interface ISchool {
+export default interface School {
   id: number;
   name: string;
   city: string;

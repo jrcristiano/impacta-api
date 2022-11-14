@@ -1,7 +1,7 @@
+import FilterApi from "./FilterApi";
 import { FindOperator } from "typeorm";
 
-export default interface IApiQueryParams {
-  loadEagerRelations?: boolean;
+export default interface SchoolFilterApi extends FilterApi {
   where?: {
     name?: undefined | FindOperator<string>;
     status?: undefined | string;
@@ -9,8 +9,4 @@ export default interface IApiQueryParams {
       name?: undefined | FindOperator<string>;
     }
   };
-  order?: object;
-  take?: number;
-  offset?: number;
-  select?: string[];
 }

@@ -7,8 +7,8 @@ class SegmentService extends AbstractService<Segment> {
     super(Segment);
   }
 
-  async findSegmentsByName(names: Segment[]) {
-    return this.repository.find({ where: { name: In(names) } });
+  async findSegmentsByName(names: string[]) {
+    return await this.repository.find({ where: { name: In(names) } });
   }
 }
 

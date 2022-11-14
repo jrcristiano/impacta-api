@@ -6,7 +6,6 @@ import {
     FindOptionsWhere,
     Repository,
 } from "typeorm";
-import { Request } from "express";
 
 abstract class AbstractService<Entity> {
     protected readonly repository: Repository<Entity>;

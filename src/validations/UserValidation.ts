@@ -43,7 +43,18 @@ const password = body('password').notEmpty()
       max: 255,
     })
     .withMessage('O campo senha precisa ter de 8 a 255 caracteres.')
-  .trim();
+    .trim();
+    
+const role = body('role').notEmpty()
+    .withMessage('O campo perfil é obrigatório.')
+    .isString()
+    .withMessage('O campo role precisa ser uma string.')
+    .isLength({
+      min: 3,
+      max: 255,
+    })
+    .withMessage('O campo senha precisa ter de 2 a 255 caracteres.')
+    .trim();
     
 const login = [
   email,
@@ -55,12 +66,14 @@ const store = [
   lastname,
   email,
   password,
+  role,
 ];
 
 const update = [
   fName,
   lastname,
   email,
+  role,
 ];
 
 export default {login, store, update};

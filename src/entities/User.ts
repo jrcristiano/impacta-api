@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne, ManyToOne, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne } from "typeorm"
 import School from "./School"
 
 @Entity('users')
@@ -23,7 +23,7 @@ export default class User {
 
     @ManyToOne(type => School, { onDelete: 'CASCADE' })
     @JoinColumn({name: 'school_id'})
-    school_id: School;
+    school: School;
 
     @Column({type: 'timestamp', name: 'created_at', nullable: false, default: () => "CURRENT_TIMESTAMP(6)"})
     created_at: Date;

@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import env from "../../env";
-import JwtDecoded from "../interfaces/IJwtDecoded";
+import JwtDecoded from "../interfaces/JwtDecoded";
 
 class CheckJwtMiddleware {
   handler(req: Request, res: Response, next: NextFunction) {
-
     const token = req.headers.authorization;
     if (!token) {
       return res.status(401).json({
