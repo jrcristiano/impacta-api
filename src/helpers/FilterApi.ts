@@ -1,4 +1,3 @@
-import { In, Like } from "typeorm";
 import IFilterApi from "../interfaces/ApiParams/FilterApi";
 import IQueryParams from "../interfaces/QueryParams/QueryParams";
 class FilterApi {

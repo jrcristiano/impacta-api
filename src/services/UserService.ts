@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { Like } from "typeorm";
 import User from "../entities/User";
 import FilterApi from "../helpers/FilterApi";
 import UserFilterApi from "../interfaces/ApiParams/UserFilterApi";
@@ -35,12 +36,17 @@ class UserService extends AbstractService<User> {
     const filters = {
       ...filterApi,
       where: {
+        name: undefined,
         school: {
           id: undefined
         },
         role: undefined,
       }
     };
+
+    if (query.search) {
+      filters.where.name = Like(`%${query.search}%`)
+    }
     
     if (query.role && query.role != 'TODOS') {
       filters.where.role = query.role;
