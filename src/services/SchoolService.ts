@@ -52,12 +52,12 @@ class SchoolService extends AbstractService<School> {
   }
 
   async save(req: Request): Promise<School> {
+    const body = req.body as SchoolBody;
+    
     let school = new School;
     if (req.params.id) {
       school = await this.findById(req.params.id);
     }
-
-    const body = req.body as SchoolBody;
 
     school.name = body.name;
     school.city = body.city;

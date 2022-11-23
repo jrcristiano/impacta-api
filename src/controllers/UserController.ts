@@ -19,8 +19,10 @@ class UserController {
     try {
       const errors = validationResult(req);
       if (errors.isEmpty() === false) {
+        const errorMessages = errors.array().map(error => error.msg);
+
         return res.status(400).json({
-          message: errors.array()
+          message: errorMessages
         });
       }
 
@@ -35,7 +37,7 @@ class UserController {
 
   async show(req: Request, res: Response) {
     try {
-      const user = await UserService.findById(req.params.id) as User;
+      const user = await UserService.findUserById(req) as User;
       if (!user) {
         return res.status(404).json({
           message: `Usuário ${req.params.id} não encontrado.`,

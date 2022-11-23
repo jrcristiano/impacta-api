@@ -5,6 +5,10 @@ import FilterApi from "../helpers/FilterApi";
 import UserFilterApi from "../interfaces/ApiParams/UserFilterApi";
 import UserQueryParams from "../interfaces/QueryParams/UserQueryParams";
 import AbstractService from "./AbstractService";
+import bcrypt from 'bcrypt';
+import UserBody from "../interfaces/RequestBody/UserBody";
+import SchoolService from "./SchoolService";
+
 class UserService extends AbstractService<User> {
   constructor() {
     super(User);
@@ -52,7 +56,7 @@ class UserService extends AbstractService<User> {
       filters.where.role = query.role;
     }
 
-    if (query.school) {
+    if (query.school && query.school != 'TODOS') {
       filters.where.school.id = query.school;
     }
     
@@ -63,9 +67,42 @@ class UserService extends AbstractService<User> {
     return await this.getAll(filters);
   }
 
-  async save(req: Request) {
-    const body = req.body as User;
-    // body.password = bcrypt.hashSync(body.password, env.PASSWORD_SALT);
+  async save(req: Request): Promise<User> {
+    const body = req.body as UserBody;
+
+    const user = new User;
+    
+    user.name = body.name;
+    user.lastname = body.lastname;
+    user.email = body.email;
+
+    if (body.password) {
+      user.password = bcrypt.hashSync(body.password, 12);
+    }
+  
+    user.role = body.role;
+    user.school = await SchoolService.findById(body.school);
+
+    console.log(user);
+    
+    // return await this.persist(user);
+  }
+
+  async findUserById(req: Request): Promise<User> {
+    return await this.repository.findOne({
+      select: [
+        'id',
+        'name',
+        'lastname',
+        'email',
+        'role',
+        'created_at',
+        'updated_at'
+      ],
+      relations: ['school'],
+      where: { id: parseInt(req.params.id) },
+      loadEagerRelations: false
+    })
   }
 }
 
