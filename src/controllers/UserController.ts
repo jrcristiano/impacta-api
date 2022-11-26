@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import bcrypt from 'bcrypt';
 import UserService from '../services/UserService';
-import env from '../../env';
 import IUser from '../interfaces/Entities/User';
 import User from '../entities/User';
 
@@ -60,10 +58,6 @@ class UserController {
       }
 
       const body = req.body as IUser;
-      if (body.password) {
-        body.password = bcrypt.hashSync(body.password, env.PASSWORD_SALT);
-      }
-
       await UserService.save(req);
       return res.status(200).json({
         message: `Usuário ${req.params.id} editado com sucesso.`

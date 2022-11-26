@@ -8,6 +8,7 @@ import AbstractService from "./AbstractService";
 import bcrypt from 'bcrypt';
 import UserBody from "../interfaces/RequestBody/UserBody";
 import SchoolService from "./SchoolService";
+import env from "../../env";
 
 class UserService extends AbstractService<User> {
   constructor() {
@@ -77,15 +78,17 @@ class UserService extends AbstractService<User> {
     user.email = body.email;
 
     if (body.password) {
-      user.password = bcrypt.hashSync(body.password, 12);
+      user.password = bcrypt.hashSync(body.password, env.PASSWORD_SALT);
+    }
+
+    if (req.params.id) {
+      user.id = parseInt(req.params.id);
     }
   
     user.role = body.role;
-    user.school = await SchoolService.findById(body.school);
-
-    console.log(user);
+    user.school = await SchoolService.findById(body.school); 
     
-    // return await this.persist(user);
+    return await this.persist(user);
   }
 
   async findUserById(req: Request): Promise<User> {

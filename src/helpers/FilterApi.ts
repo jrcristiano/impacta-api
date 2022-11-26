@@ -19,7 +19,7 @@ class FilterApi {
     if (query.columns) {
       filters.select.push('id', ...query.columns);
     }
-
+    
     if (query.eager == 'true') {
       filters.loadEagerRelations = true;
     }
