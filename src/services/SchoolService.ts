@@ -13,7 +13,7 @@ class SchoolService extends AbstractService<School> {
     super(School);
   }
 
-  async findAll(req: Request): Promise<School[]> {
+  async getAll(req?: Request): Promise<School[]> {
     const query = req.query as SchoolQueryParams;
     let filterApi = new FilterApi()
       .setFilters(query)
@@ -42,7 +42,7 @@ class SchoolService extends AbstractService<School> {
       filters.where.segments.name = In(query.segmentos);
     }
     
-    return await this.getAll(filters as FindManyOptions<School>);
+    return await this.repository.find(filters as FindManyOptions<School>);
   }
 
   async findSchoolByCnpj(cnpj: string) {
@@ -56,7 +56,7 @@ class SchoolService extends AbstractService<School> {
     
     let school = new School;
     if (req.params.id) {
-      school = await this.findById(req.params.id);
+      school.id = parseInt(req.params.id);
     }
 
     school.name = body.name;
@@ -69,7 +69,7 @@ class SchoolService extends AbstractService<School> {
     const segments = await SegmentService.findSegmentsByName(body.segments);
     school.segments = segments;
     
-    return await this.persist(school);
+    return await this.repository.save(school);
   }
 }
 

@@ -5,7 +5,7 @@ import SchoolService from "../services/SchoolService";
 class SchoolController {
   async index(req: Request, res: Response) {
     try {
-      return res.status(200).json(await SchoolService.findAll(req));
+      return res.status(200).json(await SchoolService.getAll(req));
     } catch ({ message }) {
       return res.status(500).json({ message });
     }
@@ -34,7 +34,7 @@ class SchoolController {
   
   async show(req: Request, res: Response) {
     try {
-      const school = await SchoolService.findById(req.params.id);
+      const school = await SchoolService.getRepository().findOneBy({ id: req.params.id });
       if (!school) {
         return res.status(404).json({
           message: 'Escola não encontrada.'
@@ -58,7 +58,7 @@ class SchoolController {
         });
       }
 
-      let school = await SchoolService.findById(req.params.id);
+      let school = await SchoolService.getRepository().findOneBy({ id: req.params.id });
       if (!school) {
         return res.status(200).json({
           message: 'Escola não encontrada.',
@@ -76,7 +76,7 @@ class SchoolController {
 
   async destroy(req: Request, res: Response) {
     try {
-      await SchoolService.forceDelete(req.params.id);
+      await SchoolService.getRepository().delete(req.params.id);
       return res.status(200).json({
         message: `Escola ${req.params.id} removida com sucesso.`
       });

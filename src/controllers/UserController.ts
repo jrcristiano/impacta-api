@@ -7,7 +7,7 @@ import User from '../entities/User';
 class UserController {
   async index(req: Request, res: Response) {
     try {
-      return res.status(200).json(await UserService.findAll(req));
+      return res.status(200).json(await UserService.getAll(req));
     } catch ({message}) {
       return res.status(500).json({message});
     }
@@ -57,7 +57,6 @@ class UserController {
         })
       }
 
-      const body = req.body as IUser;
       await UserService.save(req);
       return res.status(200).json({
         message: `Usuário ${req.params.id} editado com sucesso.`
@@ -69,7 +68,7 @@ class UserController {
 
   async destroy(req: Request, res: Response) {
     try {
-      await UserService.forceDelete(req.params.id);
+      await UserService.getRepository().delete(req.params.id);
       return res.status(200).json({
         message: `Usuário ${req.params.id} removido com sucesso.`
       });

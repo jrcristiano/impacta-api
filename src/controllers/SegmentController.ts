@@ -4,7 +4,7 @@ import SegmentService from "../services/SegmentService";
 class SegmentController {
   async index(req: Request, res: Response) {
     try {
-      return res.status(200).json(await SegmentService.getAll({}));
+      return res.status(200).json(await SegmentService.getRepository().find());
     } catch ({ message }) {
       return res.status(500).json({ message });
     }

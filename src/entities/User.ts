@@ -1,10 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne } from "typeorm"
+import { Uid } from "../types/uid"
 import School from "./School"
 
 @Entity('users')
 export default class User {
     @PrimaryGeneratedColumn()
-    id: number
+    id: Uid
 
     @Column({nullable: false})
     name: string

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Like } from "typeorm";
+import { FindManyOptions, Like } from "typeorm";
 import User from "../entities/User";
 import FilterApi from "../helpers/FilterApi";
 import UserFilterApi from "../interfaces/ApiParams/UserFilterApi";
@@ -21,7 +21,7 @@ class UserService extends AbstractService<User> {
     });
   }
 
-  async findAll(req: Request) {
+  async getAll(req?: Request) {
     const query = req.query as UserQueryParams;
 
     let filterApi = new FilterApi()
@@ -65,7 +65,7 @@ class UserService extends AbstractService<User> {
       filters.relations.push('school');
     }
 
-    return await this.getAll(filters);
+    return await this.repository.find(filters as FindManyOptions<User>);
   }
 
   async save(req: Request): Promise<User> {
@@ -86,9 +86,9 @@ class UserService extends AbstractService<User> {
     }
   
     user.role = body.role;
-    user.school = await SchoolService.findById(body.school); 
+    user.school = await SchoolService.getRepository().findOneBy({ id: body.school }); 
     
-    return await this.persist(user);
+    return await this.repository.save(user);
   }
 
   async findUserById(req: Request): Promise<User> {
