@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import UserService from '../services/UserService';
-import IUser from '../interfaces/Entities/User';
 import User from '../entities/User';
 
 class UserController {
